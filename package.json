@@ -1,0 +1,56 @@
+{
+  "name": "lavicon-animation",
+  "version": "1.0.0",
+  "description": "React component for animating spritesheets generated from lavicon.dev with multiple trigger modes (hover, click, auto)",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c rollup.config.cjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "animation",
+    "sprite",
+    "spritesheet",
+    "icon",
+    "component",
+    "lavicon"
+  ],
+  "author": "lavicon",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "framer-motion": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^24.0.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
+    "@rollup/plugin-typescript": "^11.0.0",
+    "@rollup/plugin-terser": "^0.4.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "framer-motion": "^10.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lavicon-dev/lavicon-animation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lavicon-dev/lavicon-animation/issues"
+  },
+  "homepage": "https://github.com/Lavicon-dev/lavicon-animation#readme"
+}
