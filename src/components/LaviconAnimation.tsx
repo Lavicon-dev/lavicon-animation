@@ -4,19 +4,19 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 export type TriggerMode = "hover" | "click" | "auto";
 
 export interface LaviconAnimationProps {
-  url: string; // URL of the spritesheet (from the public folder)
-  size?: number; // Size of the displayed icon (square)
-  frameSize?: number; // Size of each frame in the spritesheet
-  fps?: number; // Frames per second for the animation
-  cols?: number; // Number of columns in the spritesheet
-  totalFrames?: number; // Total number of frames in the spritesheet
+  url: string;             // URL of the spritesheet (from the public folder)
+  size?: number;           // Size of the displayed icon (square)
+  frameSize?: number;      // Size of each frame in the spritesheet
+  fps?: number;            // Frames per second for the animation
+  cols?: number;           // Number of columns in the spritesheet
+  totalFrames?: number;    // Total number of frames in the spritesheet
   triggerMode?: TriggerMode; // Trigger mode for the animation
-  loop?: boolean; // Loop the animation in auto or click mode
-  initialFrame?: number; // Initial frame (default 0)
-  className?: string; // Additional CSS classes
-  alt?: string; // Alt text for accessibility
-  onClick?: () => void; // Additional onClick callback
-  autoPlay?: boolean; // Start the animation automatically
+  loop?: boolean;          // Loop the animation in auto or click mode
+  initialFrame?: number;   // Initial frame (default 0)
+  className?: string;      // Additional CSS classes
+  alt?: string;            // Alt text for accessibility
+  onClick?: () => void;    // Additional onClick callback
+  autoPlay?: boolean;      // Start the animation automatically
   renderingQuality?: "auto" | "crisp-edges" | "pixelated"; // Rendering quality
   cursorPointer?: boolean; // Enable/disable cursor pointer
 }
@@ -36,7 +36,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   onClick,
   autoPlay = false,
   renderingQuality = "crisp-edges",
-  cursorPointer = false,
+  cursorPointer = false
 }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [isPlaying, setIsPlaying] = useState(autoPlay);
@@ -46,25 +46,25 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   const lastTimeRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number>(0);
   const frameInterval = 1000 / Math.min(fps, 120);
-  const direction = useRef<"forward" | "backward">("forward");
+  const direction = useRef<'forward' | 'backward'>('forward');
   const animationLocked = useRef<boolean>(false);
-
+  
   const y = useMotionValue(0);
   const scale = useMotionValue(1);
   const scaleSpring = useSpring(scale, { stiffness: 700, damping: 30 });
   const ySpring = useSpring(y, { stiffness: 500, damping: 25 });
-
+  
   const sizeRatio = size / frameSize;
 
   const calculatePosition = (frame: number) => {
     const col = frame % cols;
     const row = Math.floor(frame / cols);
-
+    
     return {
       transform: `translate(-${col * 100}%, -${row * 100}%)`,
       width: `${cols * 100}%`,
       height: `${Math.ceil(totalFrames / cols) * 100}%`,
-      objectPosition: `${col * 100}% ${row * 100}%`,
+      objectPosition: `${col * 100}% ${row * 100}%`
     };
   };
 
@@ -78,7 +78,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   const resetAnimation = () => {
     stopAnimation();
     setCurrentFrame(initialFrame);
-    direction.current = "forward";
+    direction.current = 'forward';
     animationLocked.current = false;
   };
 
@@ -94,41 +94,33 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
       const framesAdvance = Math.min(Math.floor(elapsed / frameInterval), 3);
       lastFrameTimeRef.current = timestamp - (elapsed % frameInterval);
 
-      setCurrentFrame((prevFrame) => {
+      setCurrentFrame(prevFrame => {
         let newFrame = prevFrame;
-
-        if (direction.current === "forward") {
+        
+        if (direction.current === 'forward') {
           newFrame = Math.min(prevFrame + framesAdvance, totalFrames - 1);
-
-          if (newFrame >= totalFrames - 1) {
-            if (loop) {
-              direction.current = "backward";
-            } else if (triggerMode === "click") {
-              direction.current = "backward";
-            }
+          
+          if (newFrame >= totalFrames - 1 && triggerMode === 'click' && !loop) {
+            direction.current = 'backward';
+          } else if (newFrame >= totalFrames - 1 && loop) {
+            newFrame = initialFrame;
           }
         } else {
           newFrame = Math.max(prevFrame - framesAdvance, initialFrame);
-
-          if (newFrame <= initialFrame) {
-            if (loop) {
-              direction.current = "forward";
-            } else if (triggerMode === "click") {
-              animationLocked.current = false;
-              setIsPlaying(false);
-            }
+          
+          if (newFrame <= initialFrame && triggerMode === 'click') {
+            animationLocked.current = false;
+            setIsPlaying(false);
           }
         }
-
+        
         return newFrame;
       });
     }
 
-    if (
-      isPlaying ||
-      (triggerMode === "hover" && isHovering) ||
-      (direction.current === "backward" && currentFrame > initialFrame)
-    ) {
+    if (isPlaying || 
+        (triggerMode === 'hover' && isHovering) || 
+        (direction.current === 'backward' && currentFrame > initialFrame)) {
       animationRef.current = requestAnimationFrame(animateSprite);
     } else {
       stopAnimation();
@@ -138,12 +130,12 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   // Click gestion
   const handleClick = () => {
     if (onClick) onClick();
-
-    if (triggerMode === "click" && !animationLocked.current) {
-      direction.current = "forward";
+    
+    if (triggerMode === 'click' && !animationLocked.current) {
+      direction.current = 'forward';
       setIsPlaying(true);
       animationLocked.current = true;
-
+      
       if (!animationRef.current) {
         lastTimeRef.current = null;
         lastFrameTimeRef.current = 0;
@@ -154,25 +146,19 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
 
   useEffect(() => {
     // Auto-play or hover/click mode
-    if (
-      (autoPlay && !animationRef.current) ||
-      (triggerMode === "hover" && isHovering && !animationRef.current) ||
-      (isPlaying && !animationRef.current)
-    ) {
+    if ((autoPlay && !animationRef.current) || 
+        (triggerMode === 'hover' && isHovering && !animationRef.current) || 
+        (isPlaying && !animationRef.current)) {
+      
       // Start animation
-      direction.current = "forward";
+      direction.current = 'forward';
       lastTimeRef.current = null;
       lastFrameTimeRef.current = 0;
       animationRef.current = requestAnimationFrame(animateSprite);
-    }
+    } 
     // Stop hover and reverse animation
-    else if (
-      triggerMode === "hover" &&
-      !isHovering &&
-      currentFrame > initialFrame &&
-      !animationRef.current
-    ) {
-      direction.current = "backward";
+    else if (triggerMode === 'hover' && !isHovering && currentFrame > initialFrame && !animationRef.current) {
+      direction.current = 'backward';
       lastTimeRef.current = null;
       lastFrameTimeRef.current = 0;
       animationRef.current = requestAnimationFrame(animateSprite);
@@ -202,8 +188,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
         height: `${size}px`,
         y: ySpring,
         scale: scaleSpring,
-        cursor:
-          cursorPointer || triggerMode === "click" ? "pointer" : "default",
+        cursor: cursorPointer || triggerMode === 'click' ? 'pointer' : 'default',
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -211,42 +196,37 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
       onMouseUp={() => setIsPressed(false)}
       onClick={handleClick}
       initial={{ opacity: 0.9 }}
-      whileHover={{
+      whileHover={{ 
         opacity: 1,
-        scale: triggerMode === "click" ? 1.02 : 1.05,
-        transition: { duration: 0.2 },
+        scale: triggerMode === 'click' ? 1.02 : 1.05,
+        transition: { duration: 0.2 } 
       }}
       role="img"
       aria-label={alt}
     >
-      <div
+      <div 
         style={{
-          position: "absolute",
+          position: 'absolute',
           top: 0,
           left: 0,
           width: `${size}px`,
           height: `${size}px`,
-          overflow: "hidden",
+          overflow: 'hidden',
         }}
       >
         <div
           style={{
-            position: "absolute",
+            position: 'absolute',
             top: 0,
             left: 0,
             width: `${frameSize}px`,
             height: `${frameSize}px`,
             backgroundImage: `url(${url})`,
             backgroundSize: `${cols * frameSize}px auto`,
-            backgroundPosition: `-${(currentFrame % cols) * frameSize}px -${
-              Math.floor(currentFrame / cols) * frameSize
-            }px`,
-            backgroundRepeat: "no-repeat",
-            transformOrigin: "top left",
-            imageRendering:
-              renderingQuality === "crisp-edges"
-                ? "pixelated"
-                : renderingQuality,
+            backgroundPosition: `-${(currentFrame % cols) * frameSize}px -${Math.floor(currentFrame / cols) * frameSize}px`,
+            backgroundRepeat: 'no-repeat',
+            transformOrigin: 'top left',
+            imageRendering: renderingQuality,
             transform: `scale(${sizeRatio})`,
           }}
         />
