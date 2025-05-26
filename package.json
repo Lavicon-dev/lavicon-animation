@@ -1,6 +1,6 @@
 {
   "name": "lavicon-animation",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "React component for animating spritesheets generated from lavicon.dev with multiple trigger modes (hover, click, auto)",
   "type": "module",
   "main": "dist/index.js",

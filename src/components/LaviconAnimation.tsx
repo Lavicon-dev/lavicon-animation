@@ -256,9 +256,10 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
             }px`,
             backgroundRepeat: "no-repeat",
             transformOrigin: "top left",
-            imageRendering: isFirefox 
-              ? (renderingQuality === "crisp-edges" ? "crisp-edges" : renderingQuality)
-              : (renderingQuality === "crisp-edges" ? "pixelated" : renderingQuality),
+            imageRendering:
+              renderingQuality === "crisp-edges"
+                ? (isFirefox ? "crisp-edges" : "pixelated")
+                : renderingQuality,
             transform: `scale(${sizeRatio})`,
             ...(isFirefox && {
               backfaceVisibility: "hidden",
