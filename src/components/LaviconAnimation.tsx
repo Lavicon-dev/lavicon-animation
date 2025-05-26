@@ -45,11 +45,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   const animationRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number>(0);
-  
-  const isFirefox = typeof navigator !== 'undefined' && navigator.userAgent.toLowerCase().includes('firefox');
-  
-  const frameInterval = 1000 / Math.min(fps, isFirefox ? 60 : 120);
-  
+  const frameInterval = 1000 / Math.min(fps, 120);
   const direction = useRef<"forward" | "backward">("forward");
   const animationLocked = useRef<boolean>(false);
 
@@ -95,7 +91,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
     const elapsed = timestamp - lastFrameTimeRef.current;
 
     if (elapsed >= frameInterval) {
-      const framesAdvance = isFirefox ? 1 : Math.min(Math.floor(elapsed / frameInterval), 3);
+      const framesAdvance = Math.min(Math.floor(elapsed / frameInterval), 3);
       lastFrameTimeRef.current = timestamp - (elapsed % frameInterval);
 
       setCurrentFrame((prevFrame) => {
@@ -208,11 +204,6 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
         scale: scaleSpring,
         cursor:
           cursorPointer || triggerMode === "click" ? "pointer" : "default",
-        ...(isFirefox && {
-          willChange: "transform",
-          backfaceVisibility: "hidden",
-          perspective: 1000,
-        }),
       }}
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
@@ -236,10 +227,6 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
           width: `${size}px`,
           height: `${size}px`,
           overflow: "hidden",
-          ...(isFirefox && {
-            transform: "translateZ(0)",
-            willChange: "background-position",
-          }),
         }}
       >
         <div
@@ -258,13 +245,9 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
             transformOrigin: "top left",
             imageRendering:
               renderingQuality === "crisp-edges"
-                ? (isFirefox ? "crisp-edges" : "pixelated")
+                ? "pixelated"
                 : renderingQuality,
             transform: `scale(${sizeRatio})`,
-            ...(isFirefox && {
-              backfaceVisibility: "hidden",
-              willChange: "transform, background-position",
-            }),
           }}
         />
       </div>
