@@ -27,3 +27,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Documentation AI et analyse
+CLAUDE.md
+analyse.md
+theorie.md
+ANALYSE_*.md
+
+# Scripts de développement non essentiels
+debug-*.js
