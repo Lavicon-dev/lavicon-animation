@@ -18,6 +18,38 @@ This package requires the following peer dependencies:
 npm install react react-dom framer-motion
 ```
 
+## Compatibility
+
+Tested on 2026-10-28. "Unit tests" is the Vitest suite run against each
+combination; "Packed tarball" is a clean consumer project installing the
+`npm pack` output (no peer warning, CommonJS `require`, ESM `import`,
+server rendering with `react-dom/server`, and a strict TypeScript check of
+the public types).
+
+| React | framer-motion | Unit tests | Packed tarball |
+|-------|---------------|------------|----------------|
+| 18.3  | 10.18         | passed     | passed         |
+| 18.3  | 11.18         | passed     | passed         |
+| 18.3  | 12.43         | passed     | passed         |
+| 18.3  | 14.7          | passed     | not run        |
+| 19.3  | 12.43         | passed     | passed         |
+| 19.3  | 13.5          | passed     | not run        |
+| 19.3  | 14.7          | passed     | passed         |
+
+React 16 and 17 are not supported. React 19 with framer-motion 10 is not
+supported by framer-motion 10 itself (its peer range stops at React 18).
+
+### `framer-motion` or `motion`?
+
+framer-motion was renamed `motion`, but the `framer-motion` package is still
+published, at the same version as `motion`, and is not deprecated. This
+package keeps `framer-motion` as its peer dependency: switching would break
+the install of every existing integrator for no functional gain. Projects that
+only install `motion` still work, because `motion` depends on `framer-motion`
+(checked with `motion@14`, framer-motion is then resolved once). A move to
+`motion` will be considered for a 2.0.0, or if `framer-motion` gets
+deprecated on npm.
+
 ## Usage
 
 ```jsx
