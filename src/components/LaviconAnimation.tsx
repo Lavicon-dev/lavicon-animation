@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { spriteBackgroundPosition } from "../lib/sprite";
 
 export type TriggerMode = "hover" | "click" | "auto";
 
@@ -55,18 +56,6 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
   const ySpring = useSpring(y, { stiffness: 500, damping: 25 });
   
   const sizeRatio = size / frameSize;
-
-  const calculatePosition = (frame: number) => {
-    const col = frame % cols;
-    const row = Math.floor(frame / cols);
-    
-    return {
-      transform: `translate(-${col * 100}%, -${row * 100}%)`,
-      width: `${cols * 100}%`,
-      height: `${Math.ceil(totalFrames / cols) * 100}%`,
-      objectPosition: `${col * 100}% ${row * 100}%`
-    };
-  };
 
   const stopAnimation = () => {
     if (animationRef.current !== null) {
@@ -223,7 +212,7 @@ export const LaviconAnimation: React.FC<LaviconAnimationProps> = ({
             height: `${frameSize}px`,
             backgroundImage: `url(${url})`,
             backgroundSize: `${cols * frameSize}px auto`,
-            backgroundPosition: `-${(currentFrame % cols) * frameSize}px -${Math.floor(currentFrame / cols) * frameSize}px`,
+            backgroundPosition: spriteBackgroundPosition(currentFrame, cols, frameSize),
             backgroundRepeat: 'no-repeat',
             transformOrigin: 'top left',
             imageRendering: renderingQuality,
