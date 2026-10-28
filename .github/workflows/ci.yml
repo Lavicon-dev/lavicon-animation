@@ -17,7 +17,7 @@ jobs:
       - run: npm ci
       - name: Typecheck
         run: npx tsc --noEmit
-      # - run: npm test   # à activer avec #2 (le script de test fait exit 1 aujourd'hui)
+      - run: npm test
       - run: npm run build
       - name: Cibles du paquet présentes et non vides
         run: |
