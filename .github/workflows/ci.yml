@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      # - run: npm test   # à activer avec #2 (le script de test fait exit 1 aujourd'hui)
+      - run: npm run build
+      - name: Cibles du paquet présentes et non vides
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = require('./package.json');
+            for (const f of [pkg.main, pkg.module, pkg.types]) {
+              if (!fs.existsSync(f)) { console.error('Cible manquante : ' + f); process.exit(1); }
+              if (fs.statSync(f).size === 0) { console.error('Cible vide : ' + f); process.exit(1); }
+            }
+            console.log('main, module et types présents et non vides');
+          "
